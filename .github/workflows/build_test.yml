@@ -1,0 +1,42 @@
+# .github/workflows/build-notifier.yml
+
+name: CI Build and Notify
+
+# This action runs on every push to the main branch
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Your actual build commands go here
+      # This is just an example. Replace it with your real build process.
+      # For demonstration, we will make this step fail sometimes.
+      - name: Run Build Process
+        run: |
+          echo "⚙️ Starting the build process..."
+          # To test a failure, uncomment the next line:
+          # exit 1 
+          echo "✅ Build finished successfully."
+
+      # Step 3: Send notification to n8n
+      # The "if: always()" condition ensures this step runs even if the
+      # previous "Run Build Process" step fails.
+      - name: Notify n8n of Build Status
+        if: always()
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{
+                "status": "${{ job.status }}",
+                "repo": "${{ github.repository }}",
+                "commit_sha": "${{ github.sha }}",
+                "actor": "${{ github.actor }}",
+                "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              }' \
+          "${{ secrets.N8N_BUILD_WEBHOOK_URL }}"
