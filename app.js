@@ -13,6 +13,7 @@ const server = http.createServer((req, res) => {
   // This is the routing logic
   // It checks the URL path of the request
   if (req.url === '/') {
+    
     res.statusCode = 200; // OK
     res.end('Welcome to the Home Page!\n');
   } else if (req.url === '/about') {
