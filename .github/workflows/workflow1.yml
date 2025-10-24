@@ -35,22 +35,22 @@ jobs:
 
       # 2. Validates all HTML files in the repository for errors
       - name: Validate HTML
-        uses: run-html-validation/html-validator-action@v1
+        uses: nu-validator/validator-action
         with:
           files: ./*.html # Validates all .html files in the root directory
 
       # 3. Sets up the GitHub Pages environment for deployment
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+      # - name: Setup Pages
+      #   uses: actions/configure-pages@v5
 
-      # 4. Uploads your site's files as a build artifact
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload the entire repository
-          path: '.'
+      # # 4. Uploads your site's files as a build artifact
+      # - name: Upload artifact
+      #   uses: actions/upload-pages-artifact@v3
+      #   with:
+      #     # Upload the entire repository
+      #     path: '.'
 
-      # 5. Deploys the artifact to GitHub Pages
-      - name: Deploy to GitHub Pages
-        id: deployment
+      # # 5. Deploys the artifact to GitHub Pages
+      # - name: Deploy to GitHub Pages
+      #   id: deployment
         uses: actions/deploy-pages@v4
