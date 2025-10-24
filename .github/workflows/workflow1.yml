@@ -31,7 +31,7 @@ jobs:
 
       # 3. Installs project dependencies from package-lock.json
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       # 4. "Compiles" the code by checking for syntax errors
       - name: Check JavaScript syntax
