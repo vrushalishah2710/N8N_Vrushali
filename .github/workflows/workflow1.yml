@@ -1,5 +1,5 @@
 # Name for your GitHub Action workflow
-name: Build Node.js App
+name: Build and Deploy HTML
 
 # Controls when the workflow will run
 on:
@@ -9,34 +9,48 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  # This single job is called "deploy"
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # 1. Checks-out your repository code
-      - name: Checkout repository
+      # 1. Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Sets up the specified version of Node.js
-      - name: Set up Node.js environment
-        uses: actions/setup-node@v4
+      # 2. Validates all HTML files in the repository for errors
+      - name: Validate HTML
+        uses: run-html-validation/html-validator-action@v1
         with:
-          node-version: '20.x'
-          cache: 'npm' # Speeds up future builds by caching dependencies
+          files: ./*.html # Validates all .html files in the root directory
 
-      # 3. Installs project dependencies from package-lock.json
-      - name: Install dependencies
-        run: npm install
+      # 3. Sets up the GitHub Pages environment for deployment
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
-      # 4. "Compiles" the code by checking for syntax errors
-      - name: Check JavaScript syntax
-        run: node -c app.js
+      # 4. Uploads your site's files as a build artifact
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload the entire repository
+          path: '.'
 
-      # 5. Optional: Add a step for linting or testing here if needed
-      # - name: Run Linter
-      #   run: npx eslint .
+      # 5. Deploys the artifact to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
