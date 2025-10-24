@@ -1,4 +1,3 @@
-# Name for your GitHub Action workflow
 name: Build and Deploy HTML
 
 # Controls when the workflow will run
@@ -35,7 +34,7 @@ jobs:
 
       # 2. Validates all HTML files in the repository for errors
       - name: Validate HTML
-        uses: nu-validator/validator-action
+        uses: nu-validator/validator-action@v1 # <-- This line is now fixed
         with:
           files: ./*.html # Validates all .html files in the root directory
 
@@ -53,4 +52,4 @@ jobs:
       # # 5. Deploys the artifact to GitHub Pages
       # - name: Deploy to GitHub Pages
       #   id: deployment
-        # uses: actions/deploy-pages@v4
+      #   uses: actions/deploy-pages@v4
